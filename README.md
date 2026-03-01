@@ -54,7 +54,7 @@ end
 OrionLib.Themes.Default = OrionLib:GenTheme(Color3.fromRGB(31, 20, 37))
 OrionLib.CurrentTheme = OrionLib.Themes.Default
 
--- Rainbow Theme System
+-- Rainbow Theme System (accents only)
 OrionLib.RainbowEnabled = false
 OrionLib.RainbowSpeed = 1
 OrionLib.RainbowHue = 0
@@ -62,12 +62,17 @@ OrionLib.RainbowHue = 0
 function OrionLib:StartRainbow(speed)
     self.RainbowEnabled = true
     self.RainbowSpeed = speed or 1
+    -- Store base dark theme
+    self.Themes.Rainbow = self:GenTheme(Color3.fromRGB(31, 20, 37))
+    self.SelectedTheme = "Rainbow"
     task.spawn(function()
         while self.RainbowEnabled do
             self.RainbowHue = (self.RainbowHue + (self.RainbowSpeed * 0.005)) % 1
-            local rainbowColor = Color3.fromHSV(self.RainbowHue, 0.7, 0.35)
-            self.Themes.Rainbow = self:GenTheme(rainbowColor)
-            self.SelectedTheme = "Rainbow"
+            local rc = Color3.fromHSV(self.RainbowHue, 0.8, 1)
+            local t = self.Themes.Rainbow
+            t.Stroke = rc
+            t.Accent = rc
+            t.Divider = Color3.fromHSV(self.RainbowHue, 0.6, 0.5)
             pcall(function() self:SetTheme() end)
             task.wait(0.05)
         end
